@@ -1,3 +1,2 @@
-import { DiscoveryDashboard } from "@/components/discovery-dashboard";
-
-export default function Home() { return <DiscoveryDashboard />; }
+import { AnimeDashboard } from "@/components/anime-dashboard";
+export default function Home() { return <AnimeDashboard />; }

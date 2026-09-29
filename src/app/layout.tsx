@@ -3,8 +3,8 @@ import { Providers } from "./providers";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "PLAY//FIELD — Discover your next game",
-  description: "A cinematic game discovery experience.",
+  title: "KOMOREBI — Find your next anime",
+  description: "A soft manga-inspired anime discovery experience.",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

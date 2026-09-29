@@ -1,7 +1,7 @@
 {
-  "name": "game_discovery_folio",
+  "name": "komorebi-anime-discovery",
   "version": "1.0.0",
-  "description": "A game discovery portfolio built with Next.js.",
+  "description": "A soft manga-inspired anime discovery portfolio built with Next.js.",
   "scripts": {
     "dev": "next dev",
     "build": "next build --webpack",

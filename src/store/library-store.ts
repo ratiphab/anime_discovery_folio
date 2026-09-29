@@ -4,10 +4,10 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 type LibraryStore = {
-  wishlist: number[];
-  collection: number[];
-  toggleWishlist: (gameId: number) => void;
-  toggleCollection: (gameId: number) => void;
+  favoriteIds: number[];
+  planToWatchIds: number[];
+  toggleFavorite: (animeId: number) => void;
+  togglePlanToWatch: (animeId: number) => void;
 };
 
 const toggle = (items: number[], item: number) =>
@@ -16,11 +16,11 @@ const toggle = (items: number[], item: number) =>
 export const useLibraryStore = create<LibraryStore>()(
   persist(
     (set) => ({
-      wishlist: [],
-      collection: [],
-      toggleWishlist: (gameId) => set((state) => ({ wishlist: toggle(state.wishlist, gameId) })),
-      toggleCollection: (gameId) => set((state) => ({ collection: toggle(state.collection, gameId) })),
+      favoriteIds: [],
+      planToWatchIds: [],
+      toggleFavorite: (animeId) => set((state) => ({ favoriteIds: toggle(state.favoriteIds, animeId) })),
+      togglePlanToWatch: (animeId) => set((state) => ({ planToWatchIds: toggle(state.planToWatchIds, animeId) })),
     }),
-    { name: "play-field-library" },
+    { name: "komorebi-library" },
   ),
 );
