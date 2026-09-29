@@ -24,6 +24,7 @@
   "dependencies": {
     "@tanstack/react-query": "^5.104.0",
     "antd": "^6.6.5",
+    "lucide-react": "^1.48.0",
     "motion": "^13.4.4",
     "next": "^16.3.6",
     "react": "^19.3.0",
