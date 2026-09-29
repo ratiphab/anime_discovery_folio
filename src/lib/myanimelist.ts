@@ -99,17 +99,11 @@ async function malFetch(path: string) {
       503,
       "MyAnimeList is not configured. Add MAL_CLIENT_ID to .env.local.",
     );
-  if (process.env.NODE_ENV === "development")
-    console.log("[MAL request]", {
-      url: `https://api.myanimelist.net/v2${path}`,
-    });
   const response = await fetch(`https://api.myanimelist.net/v2${path}`, {
     next: { revalidate: 300 },
     headers: { Accept: "application/json", "X-MAL-CLIENT-ID": clientId },
   });
   const payload = await response.json();
-  if (process.env.NODE_ENV === "development")
-    console.log("[MAL response]", { status: response.status, payload });
   if (!response.ok)
     throw new MalRequestError(
       response.status,

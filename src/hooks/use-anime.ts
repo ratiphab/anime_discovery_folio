@@ -13,16 +13,8 @@ type Filters = {
   season?: "winter" | "spring" | "summer" | "fall";
 };
 async function getJson<T>(url: string): Promise<T> {
-  if (process.env.NODE_ENV === "development")
-    console.log("[KOMOREBI client request]", url);
   const response = await fetch(url);
   const data = (await response.json()) as T & { error?: string };
-  if (process.env.NODE_ENV === "development")
-    console.log("[KOMOREBI client response]", {
-      url,
-      status: response.status,
-      data,
-    });
   if (!response.ok) throw new Error(data.error ?? "Something went wrong.");
   return data;
 }

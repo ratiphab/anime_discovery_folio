@@ -96,29 +96,6 @@ export function AnimeDashboard() {
   const favoriteIds = useLibraryStore((s) => s.favoriteIds);
   const planToWatchIds = useLibraryStore((s) => s.planToWatchIds);
 
-  useEffect(() => {
-    if (process.env.NODE_ENV === "development" && loadSeasonal) {
-      const upstreamUrl = `https://api.myanimelist.net/v2/anime/season/${seasonalRequest.year}/${seasonalRequest.season}`;
-      console.log("[KOMOREBI seasonal request]", {
-        endpoint: "/api/anime",
-        params: {
-          q: "",
-          type: "all",
-          status: "all",
-          collection: "seasonal",
-          ...seasonalRequest,
-        },
-        upstreamUrl,
-      });
-    }
-  }, [loadSeasonal, seasonalRequest]);
-
-  useEffect(() => {
-    if (process.env.NODE_ENV === "development" && seasonal.data) {
-      console.log("[KOMOREBI seasonal response]", seasonal.data);
-    }
-  }, [seasonal.data]);
-
   const clear = () => {
     setQ("");
     setType("all");
