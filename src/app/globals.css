@@ -111,3 +111,4 @@ button, input, select, textarea { font: inherit; }
 .anime-card{display:grid;grid-template-rows:auto 1fr}.poster-link{aspect-ratio:2 / 3}.anime-poster,.hero-poster,.detail-poster>div{background-size:cover;background-position:center}.anime-card-copy{display:grid;grid-template-rows:1rem 2.25rem 1rem;height:6.25rem;overflow:hidden}.anime-card-copy h3{display:-webkit-box;overflow:hidden;-webkit-box-orient:vertical;-webkit-line-clamp:2}.anime-card-copy>div{align-self:end}
 .anime-card-copy{grid-template-rows:1rem 2.5rem 1rem;height:6.5rem}.anime-card-copy h3{display:-webkit-box;margin:0;overflow:hidden;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-height:1.25rem}
 .hero-content h1{max-width:none;overflow:visible;text-overflow:unset;white-space:normal;font-size:clamp(3.7rem,8vw,7.5rem)}
+.seasonal-section .poster-stamp{display:inline-flex;align-items:center;justify-content:center;background:#fffaf2;color:#29222c;line-height:1}

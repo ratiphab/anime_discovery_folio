@@ -61,6 +61,10 @@ export async function getAnime(query: AnimeQuery): Promise<AnimePage> {
     ? parsed.data.data.filter(({ node }) => node.start_season?.year === seasonalCycle.year && node.start_season.season === seasonalCycle.season)
     : parsed.data.data;
   let items = entries.map(({ node }) => normalize(node));
+  if (query.collection === "seasonal" && query.q) {
+    const needle = query.q.toLocaleLowerCase();
+    items = items.filter((item) => item.title.toLocaleLowerCase().includes(needle) || item.titleJapanese?.toLocaleLowerCase().includes(needle));
+  }
   if (query.type !== "all") items = items.filter((item) => item.type?.toLowerCase() === query.type);
   if (query.status !== "all") items = items.filter((item) => query.status === "airing" ? item.status === "currently_airing" : item.status === "finished_airing");
   if (query.genres) items = items.filter((item) => entries.find(({ node }) => node.id === item.id)?.node.genres.some((genre) => genre.id === query.genres));

@@ -11,6 +11,12 @@ import { useLibraryStore } from "@/store/library-store";
 const typeOptions = ["all", "tv", "movie", "ova", "ona", "special"];
 const statusOptions = ["all", "airing", "complete"];
 type MalSeason = "winter" | "spring" | "summer" | "fall";
+const seasonOptions: { value: MalSeason; label: string }[] = [
+  { value: "winter", label: "Winter" },
+  { value: "spring", label: "Spring" },
+  { value: "summer", label: "Summer" },
+  { value: "fall", label: "Fall" },
+];
 function getSeasonRequest(): { year: number; season: MalSeason } {
   const date = new Date();
   const month = date.getUTCMonth() + 1;
@@ -37,6 +43,8 @@ export function AnimeDashboard() {
   const [type, setType] = useState("all");
   const [status, setStatus] = useState("all");
   const [genre, setGenre] = useState<number | undefined>();
+  const [year, setYear] = useState<number | undefined>();
+  const [season, setSeason] = useState<MalSeason | undefined>();
   const [page, setPage] = useState(1);
   const [filterOpen, setFilterOpen] = useState(false);
   const [loadAiring, setLoadAiring] = useState(false);
@@ -54,7 +62,14 @@ export function AnimeDashboard() {
     const timer = window.setTimeout(() => setLoadSeasonal(true), 1800);
     return () => window.clearTimeout(timer);
   }, []);
-  const query = useAnime({ q: debouncedQ, type, status, genres: genre, page });
+  const query = useAnime({
+    q: debouncedQ,
+    type,
+    status,
+    genres: genre,
+    page,
+    ...(year && season ? { collection: "seasonal", year, season } : {}),
+  });
   const airing = useAnime(
     { q: "", type: "all", status: "all", collection: "airing" },
     loadAiring,
@@ -63,7 +78,7 @@ export function AnimeDashboard() {
     { q: "", type: "all", status: "all", collection: "seasonal", ...seasonalRequest },
     loadSeasonal,
   );
-  const genres = useAnimeGenres(filterOpen);
+  const genres = useAnimeGenres();
   const favoriteIds = useLibraryStore((s) => s.favoriteIds);
   const planToWatchIds = useLibraryStore((s) => s.planToWatchIds);
 
@@ -95,6 +110,8 @@ export function AnimeDashboard() {
     setType("all");
     setStatus("all");
     setGenre(undefined);
+    setYear(undefined);
+    setSeason(undefined);
   };
   const controls = (
     <div className="filter-controls manga-controls">
@@ -137,6 +154,33 @@ export function AnimeDashboard() {
             label: item.name,
           }))}
           loading={genres.isLoading}
+        />
+      </label>
+      <label>
+        Year
+        <Select
+          value={year}
+          onChange={(value) => {
+            setYear(value);
+            if (!value) setSeason(undefined);
+          }}
+          placeholder="Any year"
+          allowClear
+          options={Array.from({ length: 12 }, (_, index) => {
+            const value = new Date().getUTCFullYear() - index;
+            return { value, label: String(value) };
+          })}
+        />
+      </label>
+      <label>
+        Season
+        <Select
+          value={season}
+          onChange={setSeason}
+          placeholder="Any season"
+          allowClear
+          disabled={!year}
+          options={seasonOptions}
         />
       </label>
       <button className="ink-button" onClick={clear}>
