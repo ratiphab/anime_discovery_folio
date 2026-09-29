@@ -15,5 +15,10 @@ export type Anime = {
   rank: number | null;
 };
 
-export type AnimePage = { items: Anime[]; total: number; page: number; hasNextPage: boolean };
+export type AnimePage = {
+  items: Anime[];
+  total: number;
+  page: number;
+  hasNextPage: boolean;
+};
 export type AnimeGenre = { id: number; name: string };

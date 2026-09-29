@@ -7,7 +7,9 @@ export const metadata: Metadata = {
   description: "A soft manga-inspired anime discovery experience.",
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default function RootLayout({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body>

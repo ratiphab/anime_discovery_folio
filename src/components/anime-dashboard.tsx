@@ -20,10 +20,18 @@ const seasonOptions: { value: MalSeason; label: string }[] = [
 function getSeasonRequest(): { year: number; season: MalSeason } {
   const date = new Date();
   const month = date.getUTCMonth() + 1;
-  const season = month <= 3 ? "winter" : month <= 6 ? "spring" : month <= 9 ? "summer" : "fall";
+  const season =
+    month <= 3
+      ? "winter"
+      : month <= 6
+        ? "spring"
+        : month <= 9
+          ? "summer"
+          : "fall";
   return {
     // Winter belongs to the previous seasonal cycle in this discovery rail.
-    year: season === "winter" ? date.getUTCFullYear() - 1 : date.getUTCFullYear(),
+    year:
+      season === "winter" ? date.getUTCFullYear() - 1 : date.getUTCFullYear(),
     season,
   };
 }
@@ -75,7 +83,13 @@ export function AnimeDashboard() {
     loadAiring,
   );
   const seasonal = useAnime(
-    { q: "", type: "all", status: "all", collection: "seasonal", ...seasonalRequest },
+    {
+      q: "",
+      type: "all",
+      status: "all",
+      collection: "seasonal",
+      ...seasonalRequest,
+    },
     loadSeasonal,
   );
   const genres = useAnimeGenres();
