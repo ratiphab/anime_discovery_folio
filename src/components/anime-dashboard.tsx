@@ -157,7 +157,7 @@ export function AnimeDashboard() {
           }}
           placeholder="Any year"
           allowClear
-          options={Array.from({ length: 12 }, (_, index) => {
+          options={Array.from({ length: new Date().getUTCFullYear() - 2000 + 1 }, (_, index) => {
             const value = new Date().getUTCFullYear() - index;
             return { value, label: String(value) };
           })}
