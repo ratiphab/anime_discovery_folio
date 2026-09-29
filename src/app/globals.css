@@ -1,0 +1,72 @@
+@import "tailwindcss";
+
+:root {
+  --midnight: #060816;
+  --surface: #0d1024;
+  --surface-raised: #151a33;
+  --electric-blue: #60a5fa;
+  --violet: #a78bfa;
+  --acid-lime: #75f94c;
+  --text-primary: #f4f7ff;
+  --text-muted: #9ba5c6;
+  --border-subtle: rgba(187, 203, 255, 0.14);
+  --glow-blue: 0 0 32px rgba(96, 165, 250, 0.25);
+  --glow-lime: 0 0 28px rgba(117, 249, 76, 0.2);
+  --font-sans: "Arial Nova", "Helvetica Neue", Arial, sans-serif;
+}
+
+@theme inline {
+  --color-midnight: var(--midnight);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-electric-blue: var(--electric-blue);
+  --color-violet: var(--violet);
+  --color-acid-lime: var(--acid-lime);
+  --color-ink: var(--text-primary);
+  --color-muted: var(--text-muted);
+  --font-sans: var(--font-sans);
+}
+
+* { box-sizing: border-box; }
+
+html { background: var(--midnight); }
+
+body {
+  margin: 0;
+  min-width: 320px;
+  overflow-x: clip;
+  background:
+    radial-gradient(circle at 80% -15%, rgba(96, 165, 250, 0.16), transparent 31rem),
+    radial-gradient(circle at 2% 100%, rgba(167, 139, 250, 0.13), transparent 28rem),
+    var(--midnight);
+  color: var(--text-primary);
+  font-family: var(--font-sans), Arial, sans-serif;
+}
+
+button, input, select, textarea { font: inherit; }
+
+:focus-visible { outline: 2px solid var(--acid-lime); outline-offset: 3px; }
+
+.display-title {
+  font-size: clamp(3rem, 12vw, 8rem);
+  font-weight: 700;
+  letter-spacing: -0.08em;
+  line-height: 0.84;
+}
+
+.eyebrow {
+  color: var(--acid-lime);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
