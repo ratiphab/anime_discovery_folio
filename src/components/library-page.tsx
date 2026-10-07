@@ -58,10 +58,10 @@ export function LibraryPage() {
   const favorites = useLibraryStore((state) => state.favoriteIds);
   const planned = useLibraryStore((state) => state.planToWatchIds);
   return (
-    <main className="komorebi-main">
+    <main className="phliru-main">
       <nav className="detail-nav">
         <Link href="/" className="k-brand">
-          KOMOREBI<small>木漏れ日</small>
+          PHLIRU<small>ผลิรู้</small>
         </Link>
         <Link href="/" className="back-link">
           ← Discovery

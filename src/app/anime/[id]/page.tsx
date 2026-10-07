@@ -22,7 +22,7 @@ export default async function AnimeDetailPage({
     <main className="detail-page">
       <nav className="detail-nav">
         <Link href="/" className="k-brand">
-          KOMOREBI<small>木漏れ日</small>
+          PHLIRU<small>ผลิรู้</small>
         </Link>
         <Link href="/" className="back-link">
           <ArrowLeft size={16} /> Back to discovery
@@ -41,7 +41,7 @@ export default async function AnimeDetailPage({
             {anime.image ? (
               <div style={{ backgroundImage: `url(${anime.image})` }} />
             ) : (
-              "KOMOREBI"
+              "PHLIRU"
             )}
           </div>
           <div className="detail-copy">

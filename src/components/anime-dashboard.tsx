@@ -180,14 +180,15 @@ export function AnimeDashboard() {
     </div>
   );
   return (
-    <main className="komorebi-main">
+    <main className="phliru-main">
       <nav className="k-nav">
         <a href="#top" className="k-brand">
-          KOMOREBI<small>木漏れ日</small>
+          PHLIRU<small>ผลิรู้</small>
         </a>
         <div>
           <a href="#discover">Discover</a>
           <a href="#seasonal">This season</a>
+          <Link href="/about">About us</Link>
           <Link href="/library">
             Library <i>{favoriteIds.length + planToWatchIds.length}</i>
           </Link>
@@ -304,9 +305,9 @@ export function AnimeDashboard() {
       </section>
       <footer id="library" className="k-footer">
         <a href="#top" className="k-brand">
-          KOMOREBI<small>木漏れ日</small>
+          PHLIRU<small>ผลิรู้</small>
         </a>
-        <p>Keep your favorite stories close.</p>
+        <p>Keep your favorite stories close. <Link href="/about">Meet the maker ↗</Link></p>
         <p>
           Anime data provided by{" "}
           <a href="https://myanimelist.net" target="_blank" rel="noreferrer">

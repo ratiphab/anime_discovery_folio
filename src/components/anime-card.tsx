@@ -35,7 +35,7 @@ export function AnimeCard({
             style={{ backgroundImage: `url(${anime.image})` }}
           />
         ) : (
-          <div className="anime-poster poster-fallback">KOMOREBI</div>
+          <div className="anime-poster poster-fallback">PHLIRU</div>
         )}
         <span className="poster-stamp">{anime.type ?? "Anime"}</span>
       </Link>

@@ -3,7 +3,7 @@ import { Providers } from "./providers";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "KOMOREBI — Find your next anime",
+  title: "PHLIRU — Find your next anime",
   description: "A soft manga-inspired anime discovery experience.",
 };
 
