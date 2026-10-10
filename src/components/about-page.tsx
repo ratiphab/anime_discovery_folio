@@ -22,7 +22,7 @@ export function AboutPage() {
   return (
     <main className="about-page">
       <nav className="detail-nav about-nav" aria-label="Main navigation">
-        <Link href="/" className="k-brand">PHLIRU<small>ผลิรู้</small></Link>
+        <Link href="/" className="k-brand">Phap Kep<small>พับเก็บ</small></Link>
         <div><Link href="/#discover">Discover</Link><Link href="/library">Library</Link><Link href="/about" aria-current="page">About us</Link></div>
       </nav>
 
@@ -39,7 +39,7 @@ export function AboutPage() {
 
       <section className="about-story about-section" id="story">
         <Reveal><p className="k-label">01 / The person behind the pixels</p><h2>Thoughtful interfaces.<br /><em>Solid foundations.</em></h2></Reveal>
-        <Reveal className="about-prose"><p>My strongest craft is frontend development. I work mainly with React, Next.js, and TypeScript, supported by hands-on backend experience in the Node.js ecosystem.</p><p>My work spans banking, healthcare, rental management, and real estate. Across those different worlds, the challenge I enjoy is the same: understanding the workflow, making the interface clear, and building code a team can keep working with.</p><p className="about-note">PHLIRU is my anime discovery portfolio project—a small place where interface design and software engineering meet.</p></Reveal>
+        <Reveal className="about-prose"><p>My strongest craft is frontend development. I work mainly with React, Next.js, and TypeScript, supported by hands-on backend experience in the Node.js ecosystem.</p><p>My work spans banking, healthcare, rental management, and real estate. Across those different worlds, the challenge I enjoy is the same: understanding the workflow, making the interface clear, and building code a team can keep working with.</p><p className="about-note">Phap Kep is my anime discovery portfolio project—a small place where interface design and software engineering meet.</p></Reveal>
       </section>
 
       <section className="about-toolbox about-section" id="toolbox">
@@ -61,7 +61,7 @@ export function AboutPage() {
       </section>
 
       <section className="about-outro"><Reveal><p className="k-label">Thanks for turning the pages</p><h2>Now, find a story<br /><em>that stays with you.</em></h2><Link className="brush-button" href="/#discover">Back to the discovery <ArrowUpRight size={17} /></Link></Reveal><span className="outro-flower" aria-hidden="true">✳</span></section>
-      <footer className="k-footer"><Link className="k-brand" href="/">PHLIRU<small>ผลิรู้</small></Link><p>Crafted by Ratiphab “Time” Chinnarath.</p><a href="#about-title">Back to top ↑</a></footer>
+      <footer className="k-footer"><Link className="k-brand" href="/">Phap Kep<small>พับเก็บ</small></Link><p>Crafted by Ratiphab “Time” Chinnarath.</p><a href="#about-title">Back to top ↑</a></footer>
     </main>
   );
 }

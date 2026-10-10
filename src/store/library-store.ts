@@ -21,7 +21,7 @@ export const useLibraryStore = create<LibraryStore>()(
       toggleFavorite: (animeId) => set((state) => ({ favoriteIds: toggle(state.favoriteIds, animeId) })),
       togglePlanToWatch: (animeId) => set((state) => ({ planToWatchIds: toggle(state.planToWatchIds, animeId) })),
     }),
-    // Keep the original storage key so existing saved anime survive the PHLIRU rebrand.
+    // Keep the original storage key so existing saved anime survive the Phap Kep rebrand.
     { name: "komorebi-library" },
   ),
 );

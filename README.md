@@ -1,10 +1,10 @@
-# PHLIRU
+# Phap Kep
 
-**ผลิรู้ · ให้ทุกการค้นพบ ค่อย ๆ ผลิบาน**
+**พับเก็บ · เก็บเรื่องที่ชอบ ไว้ใกล้ตัว**
 
-The name combines the Thai words for budding (ผลิ) and knowing (รู้), expressing learning that gradually blossoms through discovery and creation.
+Phap Kep (พับเก็บ) means to fold and put away in Thai. The name evokes folding a page to keep a favorite story close—a small personal archive of anime you love or want to discover next.
 
-PHLIRU is a soft manga-inspired anime discovery experience. Browse popular seasonal anime, search the MyAnimeList catalogue, refine by format, status, genre, year, and season, then keep a personal local watchlist.
+Phap Kep is a soft manga-inspired anime discovery experience. Browse popular seasonal anime, search the MyAnimeList catalogue, refine by format, status, genre, year, and season, then keep a personal local watchlist.
 
 ![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)
@@ -85,7 +85,7 @@ Browser → /api/anime → MyAnimeList API v2
 | `/library` | Local Favorites and Plan to Watch lists |
 | `/about` | Meet the maker and explore their experience |
 
-For seasonal discovery, PHLIRU resolves the active release period and requests:
+For seasonal discovery, Phap Kep resolves the active release period and requests:
 
 ```text
 GET https://api.myanimelist.net/v2/anime/season/{year}/{season}
@@ -95,7 +95,7 @@ Seasonal results are ordered using `anime_num_list_users`, then checked against 
 
 ## Data attribution
 
-Anime data and images are provided by [MyAnimeList](https://myanimelist.net/). PHLIRU is an independent portfolio project and is not affiliated with MyAnimeList.
+Anime data and images are provided by [MyAnimeList](https://myanimelist.net/). Phap Kep is an independent portfolio project and is not affiliated with MyAnimeList.
 
 ## License
 

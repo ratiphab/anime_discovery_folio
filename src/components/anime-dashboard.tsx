@@ -180,10 +180,10 @@ export function AnimeDashboard() {
     </div>
   );
   return (
-    <main className="phliru-main">
+    <main className="phap-kep-main">
       <nav className="k-nav">
         <a href="#top" className="k-brand">
-          PHLIRU<small>ผลิรู้</small>
+          Phap Kep<small>พับเก็บ</small>
         </a>
         <div>
           <a href="#discover">Discover</a>
@@ -305,7 +305,7 @@ export function AnimeDashboard() {
       </section>
       <footer id="library" className="k-footer">
         <a href="#top" className="k-brand">
-          PHLIRU<small>ผลิรู้</small>
+          Phap Kep<small>พับเก็บ</small>
         </a>
         <p>Keep your favorite stories close. <Link href="/about">Meet the maker ↗</Link></p>
         <p>

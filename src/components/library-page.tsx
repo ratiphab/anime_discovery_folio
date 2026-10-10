@@ -58,10 +58,10 @@ export function LibraryPage() {
   const favorites = useLibraryStore((state) => state.favoriteIds);
   const planned = useLibraryStore((state) => state.planToWatchIds);
   return (
-    <main className="phliru-main">
+    <main className="phap-kep-main">
       <nav className="detail-nav">
         <Link href="/" className="k-brand">
-          PHLIRU<small>ผลิรู้</small>
+          Phap Kep<small>พับเก็บ</small>
         </Link>
         <Link href="/" className="back-link">
           ← Discovery
