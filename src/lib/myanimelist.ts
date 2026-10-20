@@ -117,76 +117,67 @@ async function malFetch(path: string) {
 }
 
 export async function getAnime(query: AnimeQuery): Promise<AnimePage> {
+  // MAL does not support these filters on its search/ranking endpoints.
+  // Filter a larger upstream batch and retain paging even if it has no matches.
+  const filtered = query.type !== "all" || query.status !== "all" || !!query.genres;
+  const limit = filtered || query.year || query.collection === "seasonal" ? 50 : 12;
   const params = new URLSearchParams({
-    limit: "12",
-    offset: String((query.page - 1) * 12),
+    limit: String(limit),
+    offset: String((query.page - 1) * limit),
     fields,
     nsfw: "false",
   });
-  let path = "/anime";
-  let seasonalCycle: { year: number; season: string } | null = null;
-  if (query.collection === "airing") {
-    path = "/anime/ranking";
-    params.set("ranking_type", "airing");
-  } else if (query.collection === "seasonal") {
+  const seasonal = query.year !== undefined || query.collection === "seasonal";
+  let pages: z.infer<typeof listSchema>[];
+  if (seasonal) {
     const date = new Date();
     const season = query.season ?? getCurrentSeason(date);
-    seasonalCycle = {
-      year:
-        query.year ??
-        (season === "winter"
-          ? date.getUTCFullYear() - 1
-          : date.getUTCFullYear()),
-      season,
-    };
-    path = `/anime/season/${seasonalCycle.year}/${seasonalCycle.season}`;
-    params.set("limit", "50");
+    const year = query.year ??
+      (season === "winter" ? date.getUTCFullYear() - 1 : date.getUTCFullYear());
+    const seasons = query.season ? [query.season] : query.year
+      ? ["winter", "spring", "summer", "fall"]
+      : [season];
     params.set("sort", "anime_num_list_users");
-  } else if (query.collection === "top" || !query.q) {
-    path = "/anime/ranking";
-    params.set("ranking_type", "all");
-  } else params.set("q", query.q);
-  const parsed = listSchema.safeParse(await malFetch(`${path}?${params}`));
-  if (!parsed.success)
-    throw new MalRequestError(
-      502,
-      "MyAnimeList returned an unexpected response.",
-    );
-  const entries = seasonalCycle
-    ? parsed.data.data.filter(
-        ({ node }) =>
-          node.start_season?.year === seasonalCycle.year &&
-          node.start_season.season === seasonalCycle.season,
-      )
-    : parsed.data.data;
-  let items = entries.map(({ node }) => normalize(node));
-  if (query.collection === "seasonal" && query.q) {
-    const needle = query.q.toLocaleLowerCase();
-    items = items.filter(
-      (item) =>
-        item.title.toLocaleLowerCase().includes(needle) ||
-        item.titleJapanese?.toLocaleLowerCase().includes(needle),
-    );
+    pages = await Promise.all(seasons.map(async (season) => {
+      const parsed = listSchema.safeParse(
+        await malFetch(`/anime/season/${year}/${season}?${params}`),
+      );
+      if (!parsed.success)
+        throw new MalRequestError(502, "MyAnimeList returned an unexpected response.");
+      return {
+        ...parsed.data,
+        data: parsed.data.data.filter(({ node }) =>
+          node.start_season?.year === year && node.start_season.season === season),
+      };
+    }));
+  } else {
+    let path = "/anime";
+    if (query.collection === "airing" || query.collection === "top" || !query.q) {
+      path = "/anime/ranking";
+      params.set("ranking_type", query.collection === "airing" ? "airing" : "all");
+    } else params.set("q", query.q);
+    const parsed = listSchema.safeParse(await malFetch(`${path}?${params}`));
+    if (!parsed.success)
+      throw new MalRequestError(502, "MyAnimeList returned an unexpected response.");
+    pages = [parsed.data];
   }
-  if (query.type !== "all")
-    items = items.filter((item) => item.type?.toLowerCase() === query.type);
-  if (query.status !== "all")
-    items = items.filter((item) =>
-      query.status === "airing"
-        ? item.status === "currently_airing"
-        : item.status === "finished_airing",
-    );
-  if (query.genres)
-    items = items.filter((item) =>
-      entries
-        .find(({ node }) => node.id === item.id)
-        ?.node.genres.some((genre) => genre.id === query.genres),
-    );
+  const entries = [...new Map(pages.flatMap((page) => page.data)
+    .map(({ node }) => [node.id, node])).values()];
+  const needle = query.q.toLocaleLowerCase();
+  const items = entries.filter((node) => {
+    if (seasonal && needle && !node.title.toLocaleLowerCase().includes(needle) &&
+      !node.alternative_titles?.ja?.toLocaleLowerCase().includes(needle)) return false;
+    if (query.type !== "all" && node.media_type?.toLowerCase() !== query.type) return false;
+    if (query.status !== "all" && node.status !==
+      (query.status === "airing" ? "currently_airing" : "finished_airing")) return false;
+    if (query.genres && !node.genres.some((genre) => genre.id === query.genres)) return false;
+    return true;
+  }).map(normalize);
   return {
     items,
     total: items.length,
     page: query.page,
-    hasNextPage: Boolean(parsed.data.paging?.next),
+    hasNextPage: query.page < 100 && pages.some((page) => Boolean(page.paging?.next)),
   };
 }
 

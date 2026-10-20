@@ -13,12 +13,14 @@ Phap Kep is a soft manga-inspired anime discovery experience. Browse popular sea
 ## Features
 
 - Live anime discovery and title search powered by MyAnimeList API v2
-- Filters for format, airing status, genre, year, and seasonal release window
+- Filters for format, airing status, and genre within paged MyAnimeList batches
+- Year discovery across all four seasons, with optional season selection
 - Seasonal rail ranked by MyAnimeList list popularity
 - Airing spotlight carousel
 - About page introducing the maker, technical skills, and professional journey
 - Shareable server-rendered anime detail pages
 - Local-only Favorites and Plan to Watch lists, persisted in `localStorage`
+- Saved anime load with up to four concurrent requests and retry controls for failed items
 - Responsive soft-manga UI with keyboard focus and reduced-motion support
 - Server-side API proxy, validation with Zod, caching, and upstream error states
 
@@ -64,6 +66,7 @@ Open [http://localhost:3000](http://localhost:3000).
 npm run dev       # Start the development server
 npm run lint      # Run ESLint
 npm run typecheck # Check TypeScript types
+npm test          # Check discovery paging, filters, and library request concurrency
 npm run build     # Create a production build
 npm run start     # Run the production build locally
 ```
@@ -90,6 +93,8 @@ For seasonal discovery, Phap Kep resolves the active release period and requests
 ```text
 GET https://api.myanimelist.net/v2/anime/season/{year}/{season}
 ```
+
+MyAnimeList search and ranking endpoints do not provide these catalogue-wide filters. Format, status, and genre filters run against batches of 50 upstream entries; unfiltered discovery uses batches of 12. Results report matches in the current batch, and Next remains available even when a batch contains no matches. Year-only discovery requests all four seasons, with each season paged independently using the same batch number.
 
 Seasonal results are ordered using `anime_num_list_users`, then checked against their returned `start_season` so older long-running series do not appear in the selected season.
 

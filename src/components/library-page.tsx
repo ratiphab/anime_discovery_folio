@@ -4,10 +4,13 @@ import Link from "next/link";
 import { useQueries } from "@tanstack/react-query";
 import { AnimeCard } from "@/components/anime-card";
 import type { Anime } from "@/lib/anime";
+import { createRequestQueue } from "@/lib/request-queue";
 import { useLibraryStore } from "@/store/library-store";
 
-async function getAnime(id: number): Promise<Anime> {
-  const response = await fetch(`/api/anime/${id}`);
+const loadSavedAnime = createRequestQueue(4);
+
+async function getAnime(id: number, signal: AbortSignal): Promise<Anime> {
+  const response = await fetch(`/api/anime/${id}`, { signal });
   const data = (await response.json()) as Anime & { error?: string };
   if (!response.ok)
     throw new Error(data.error ?? "Saved anime is unavailable.");
@@ -16,17 +19,16 @@ async function getAnime(id: number): Promise<Anime> {
 
 function Shelf({ title, ids }: { title: string; ids: number[] }) {
   const queries = useQueries({
-    queries: ids.map((id, index) => ({
+    queries: ids.map((id) => ({
       queryKey: ["anime-detail", id],
-      queryFn: async () => {
-        await new Promise((resolve) => setTimeout(resolve, index * 900));
-        return getAnime(id);
-      },
+      queryFn: ({ signal }) => loadSavedAnime(() => getAnime(id, signal)),
       staleTime: 300_000,
       retry: 0,
     })),
   });
   const anime = queries.flatMap((query) => (query.data ? [query.data] : []));
+  const failed = queries.filter((query) => query.isError);
+  const loading = queries.filter((query) => query.isPending || query.isFetching).length;
   return (
     <section className="library-shelf">
       <div className="rail-heading">
@@ -41,14 +43,29 @@ function Shelf({ title, ids }: { title: string; ids: number[] }) {
           </Link>
         </div>
       ) : (
-        <div className="anime-grid">
-          {anime.map((item, index) => (
-            <AnimeCard anime={item} index={index} key={item.id} />
-          ))}
-          {queries.some((query) => query.isLoading) && (
-            <div className="anime-skeleton" />
+        <>
+          <p className="library-load-status" role="status">
+            {anime.length} of {ids.length} stories loaded{loading ? ` · Loading ${loading}…` : ""}
+          </p>
+          <div className="anime-grid">
+            {anime.map((item, index) => (
+              <AnimeCard anime={item} index={index} key={item.id} />
+            ))}
+            {Array.from({ length: Math.min(loading, 4) }, (_, index) => (
+              <div className="anime-skeleton" key={`loading-${index}`} aria-hidden="true" />
+            ))}
+          </div>
+          {failed.length > 0 && (
+            <div className="archive-state" role="alert">
+              <p className="k-label">Some stories could not be loaded</p>
+              <h3>{failed.length} saved {failed.length === 1 ? "story is" : "stories are"} unavailable.</h3>
+              <p>Your saved list is still kept on this device.</p>
+              <button className="ink-button" onClick={() => {
+                void Promise.all(failed.map((query) => query.refetch()));
+              }}>Try again</button>
+            </div>
           )}
-        </div>
+        </>
       )}
     </section>
   );

@@ -1,7 +1,7 @@
 "use client";
 import { Drawer, Select } from "antd";
 import Link from "next/link";
-import { BookOpen, Filter, Heart, Search, X } from "lucide-react";
+import { BookOpen, Filter, Menu, Search, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { AnimeCard } from "@/components/anime-card";
 import { AiringCarousel } from "@/components/airing-carousel";
@@ -54,12 +54,16 @@ export function AnimeDashboard() {
   const [year, setYear] = useState<number | undefined>();
   const [season, setSeason] = useState<MalSeason | undefined>();
   const [page, setPage] = useState(1);
+  const [menuOpen, setMenuOpen] = useState(false);
   const [filterOpen, setFilterOpen] = useState(false);
   const [loadAiring, setLoadAiring] = useState(false);
   const [loadSeasonal, setLoadSeasonal] = useState(false);
   const seasonalRequest = useMemo(() => getSeasonRequest(), []);
   useEffect(() => {
-    const timer = window.setTimeout(() => setDebouncedQ(q), 350);
+    const timer = window.setTimeout(() => {
+      setDebouncedQ(q);
+      setPage(1);
+    }, 350);
     return () => window.clearTimeout(timer);
   }, [q]);
   useEffect(() => {
@@ -76,7 +80,7 @@ export function AnimeDashboard() {
     status,
     genres: genre,
     page,
-    ...(year && season ? { collection: "seasonal", year, season } : {}),
+    ...(year ? { collection: "seasonal", year, season } : {}),
   });
   const airing = useAnime(
     { q: "", type: "all", status: "all", collection: "airing" },
@@ -96,7 +100,12 @@ export function AnimeDashboard() {
   const favoriteIds = useLibraryStore((s) => s.favoriteIds);
   const planToWatchIds = useLibraryStore((s) => s.planToWatchIds);
 
+  const changeFilter = <T,>(setter: (value: T) => void) => (value: T) => {
+    setter(value);
+    setPage(1);
+  };
   const clear = () => {
+    setPage(1);
     setQ("");
     setType("all");
     setStatus("all");
@@ -110,7 +119,7 @@ export function AnimeDashboard() {
         Format
         <Select
           value={type}
-          onChange={setType}
+          onChange={changeFilter(setType)}
           options={typeOptions.map((value) => ({
             value,
             label: value === "all" ? "All formats" : value.toUpperCase(),
@@ -121,7 +130,7 @@ export function AnimeDashboard() {
         Status
         <Select
           value={status}
-          onChange={setStatus}
+          onChange={changeFilter(setStatus)}
           options={statusOptions.map((value) => ({
             value,
             label:
@@ -137,7 +146,7 @@ export function AnimeDashboard() {
         Genre
         <Select
           value={genre}
-          onChange={setGenre}
+          onChange={changeFilter(setGenre)}
           placeholder="All genres"
           allowClear
           options={genres.data?.map((item) => ({
@@ -152,6 +161,7 @@ export function AnimeDashboard() {
         <Select
           value={year}
           onChange={(value) => {
+            setPage(1);
             setYear(value);
             if (!value) setSeason(undefined);
           }}
@@ -167,7 +177,7 @@ export function AnimeDashboard() {
         Season
         <Select
           value={season}
-          onChange={setSeason}
+          onChange={changeFilter(setSeason)}
           placeholder="Any season"
           allowClear
           disabled={!year}
@@ -185,7 +195,7 @@ export function AnimeDashboard() {
         <a href="#top" className="k-brand">
           Phap Kep<small>พับเก็บ</small>
         </a>
-        <div>
+        <div className="discovery-nav-links">
           <a href="#discover">Discover</a>
           <a href="#seasonal">This season</a>
           <Link href="/about">About us</Link>
@@ -193,7 +203,26 @@ export function AnimeDashboard() {
             Library <i>{favoriteIds.length + planToWatchIds.length}</i>
           </Link>
         </div>
+        <button
+          className="mobile-menu-button"
+          aria-label="Open navigation"
+          aria-expanded={menuOpen}
+          aria-controls="mobile-navigation"
+          onClick={() => setMenuOpen(true)}
+        >
+          <Menu size={20} /> Menu
+        </button>
       </nav>
+      <Drawer title="Phap Kep" open={menuOpen} onClose={() => setMenuOpen(false)}>
+        <nav id="mobile-navigation" className="mobile-navigation" aria-label="Main navigation">
+          <a href="#discover" onClick={() => setMenuOpen(false)}>Discover</a>
+          <a href="#seasonal" onClick={() => setMenuOpen(false)}>This season</a>
+          <Link href="/about" onClick={() => setMenuOpen(false)}>About us</Link>
+          <Link href="/library" onClick={() => setMenuOpen(false)}>
+            Library ({favoriteIds.length + planToWatchIds.length})
+          </Link>
+        </nav>
+      </Drawer>
       <AiringCarousel
         anime={airing.data?.items ?? seasonal.data?.items ?? []}
       />
@@ -219,6 +248,7 @@ export function AnimeDashboard() {
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="Search a title..."
+            maxLength={100}
             aria-label="Search anime"
           />
           {q && (
@@ -244,20 +274,25 @@ export function AnimeDashboard() {
         >
           {controls}
         </Drawer>
-        <div className="result-line">
+        <div className="result-line" aria-live="polite">
           <span>
             {query.isLoading
               ? "Searching the shelves…"
-              : `${query.data?.total ?? 0} stories found`}
+              : query.isError ? "Search unavailable" : `${query.data?.items.length ?? 0} stories in this batch`}
           </span>
           {query.isFetching && <span>Updating</span>}
         </div>
+        <p className="discovery-note">
+          Filters apply to each batch from MyAnimeList. Browse the next batch for more matches.
+          {year && !season ? ` Showing all four seasons of ${year}.` : ""}
+        </p>
         {query.isLoading ? (
           <Skeletons />
         ) : query.isError ? (
           <div className="archive-state">
             <p className="k-label">Archive unavailable</p>
             <h3>{query.error.message}</h3>
+            <button className="ink-button" onClick={() => query.refetch()}>Try again</button>
           </div>
         ) : query.data?.items.length ? (
           <div className="anime-grid">
@@ -267,8 +302,10 @@ export function AnimeDashboard() {
           </div>
         ) : (
           <div className="archive-state">
-            <p className="k-label">No stories found</p>
-            <h3>Try a different title or filter.</h3>
+            <p className="k-label">No matches in this batch</p>
+            <h3>{query.data?.hasNextPage
+              ? "Try the next batch or change your filters."
+              : "Try a different title or filter."}</h3>
             <button
               className="ink-button"
               onClick={() => {
@@ -279,6 +316,16 @@ export function AnimeDashboard() {
               Reset filters
             </button>
           </div>
+        )}
+        {!query.isError && query.data && (
+          <nav className="pagination-controls" aria-label="Discovery results">
+            <button className="ink-button" disabled={page === 1 || query.isFetching || q !== debouncedQ}
+              onClick={() => setPage((current) => current - 1)}>Previous</button>
+            <span aria-current="page">Batch {page}</span>
+            <button className="ink-button"
+              disabled={!query.data.hasNextPage || query.isFetching || q !== debouncedQ}
+              onClick={() => setPage((current) => current + 1)}>Next</button>
+          </nav>
         )}
       </section>
       <section id="seasonal" className="seasonal-section">
